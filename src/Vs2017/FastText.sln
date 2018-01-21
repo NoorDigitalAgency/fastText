@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FastText", "FastText.vcxproj", "{C6AF23B3-461F-4793-AF40-C59AAEFBB27B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestUtil", "TestUtil\TestUtil.vcxproj", "{E2160096-9E6E-471E-9FC1-2A1F0EDB609F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +17,8 @@ Global
 		{C6AF23B3-461F-4793-AF40-C59AAEFBB27B}.Debug|x64.Build.0 = Debug|x64
 		{C6AF23B3-461F-4793-AF40-C59AAEFBB27B}.Release|x64.ActiveCfg = Release|x64
 		{C6AF23B3-461F-4793-AF40-C59AAEFBB27B}.Release|x64.Build.0 = Release|x64
+		{E2160096-9E6E-471E-9FC1-2A1F0EDB609F}.Debug|x64.ActiveCfg = Debug|x64
+		{E2160096-9E6E-471E-9FC1-2A1F0EDB609F}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
