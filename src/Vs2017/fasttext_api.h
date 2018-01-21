@@ -22,5 +22,5 @@ FT_API(void*) CreateFastText();
 FT_API(void) LoadModel(void* hPtr, const char* path);
 FT_API(void) DestroyFastText(void* hPtr);
 FT_API(int) GetMaxLabelLenght(void* hPtr);
-FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs);
+FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* labelPrefix);
 FT_API(float) PredictSingle(void* hPtr, const char* input, char* predicted);
