@@ -59,7 +59,7 @@ int GetMaxLabelLenght(void* hPtr)
 	return maxLen;
 }
 
-FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs/*, const char* labelPrefix*/)
+FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* labelPrefix)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
 	auto args = Args();
@@ -75,10 +75,10 @@ FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, 
 	args.wordNgrams = trainArgs.WordNGrams;
 	args.epoch = trainArgs.Epochs;
 
-	/*if (labelPrefix != nullptr)
+	if (labelPrefix != nullptr)
 	{
 		args.label = std::string(labelPrefix);
-	}*/
+	}
 
 	fastText->train(args);
 	fastText->saveModel();
