@@ -85,7 +85,21 @@ FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, 
 	fastText->saveVectors();
 }
 
-FT_API(float) PredictSingle(void* hPtr, const char* input, char* predicted)
+FT_API(void) DestroyString(char* string)
+{
+	delete[] string;
+}
+
+FT_API(void) DestroyStrings(char** strings, int cnt)
+{
+	for (int i = 0; i < cnt; ++i)
+	{
+		delete[] strings[i];
+	}
+	delete[] strings;
+}
+
+FT_API(float) PredictSingle(void* hPtr, const char* input, char** predicted)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
 	std::vector<std::pair<real,std::string>> predictions;
@@ -99,8 +113,40 @@ FT_API(float) PredictSingle(void* hPtr, const char* input, char* predicted)
 	}
 
 	auto len = predictions[0].second.length();
-	predictions[0].second.copy(predicted, len);
-	predicted[len] = '\0';
+	auto buff = new char[len + 1];
+	predictions[0].second.copy(buff, len);
+	buff[len] = '\0';
+
+	*predicted = buff;
 	
 	return std::exp(predictions[0].first);
+}
+
+FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabels, float* predictedProbabilities, int n)
+{
+	auto fastText = static_cast<FastText*>(hPtr);
+	std::vector<std::pair<real,std::string>> predictions;
+	std::istringstream inStream(input);
+
+	fastText->predict(inStream, n, predictions, 0);
+
+	if (predictions.size() == 0)
+	{
+		return 0;
+	}
+
+	int cnt = min(predictions.size(), n);
+	auto labels = new char*[cnt];
+	for (int i = 0; i < cnt; ++i)
+	{
+		auto len = predictions[i].second.length();
+		labels[i] = new char[len + 1];
+		predictions[i].second.copy(labels[i], len);
+		labels[i][len] = '\0';
+		predictedProbabilities[i] = std::exp(predictions[i].first);
+	}
+
+	*(predictedLabels) = labels;
+
+	return cnt;
 }
