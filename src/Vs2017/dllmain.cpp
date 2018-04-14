@@ -59,6 +59,26 @@ int GetMaxLabelLenght(void* hPtr)
 	return maxLen;
 }
 
+int GetLabels(void* hPtr, char*** labels)
+{
+	auto fastText = static_cast<FastText*>(hPtr);
+	auto dict = fastText->getDictionary();
+	int numLabels = dict->nlabels();
+	auto localLabels = new char*[numLabels];
+
+	for (int i = 0; i < numLabels; ++i)
+	{
+		auto label = dict->getLabel(i);
+		auto len = label.length();
+		localLabels[i] = new char[len + 1];
+		label.copy(localLabels[i], len);
+		localLabels[i][len] = '\0';
+	}
+
+	*labels = localLabels;
+	return numLabels;
+}
+
 FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* labelPrefix)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
@@ -67,11 +87,11 @@ FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, 
 	args.input = std::string(input);
 	args.output = std::string(output);
 	args.model = model_name::sup;
-    args.loss = loss_name::softmax;
-    args.minCount = 1;
-    args.minn = trainArgs.MinCharNGrams;
-    args.maxn = trainArgs.MaxCharNGrams;
-    args.lr = trainArgs.LearningRate;
+	args.loss = loss_name::softmax;
+	args.minCount = 1;
+	args.minn = trainArgs.MinCharNGrams;
+	args.maxn = trainArgs.MaxCharNGrams;
+	args.lr = trainArgs.LearningRate;
 	args.wordNgrams = trainArgs.WordNGrams;
 	args.epoch = trainArgs.Epochs;
 
