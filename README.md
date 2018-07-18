@@ -27,6 +27,7 @@
 ## Introduction
 
 [fastText](https://fasttext.cc/) is a library for efficient learning of word representations and sentence classification.
+This fork tracks the upstream project and adds a C-style wrapper with corresponding Visual C++ project.
 
 ## Resources
 
