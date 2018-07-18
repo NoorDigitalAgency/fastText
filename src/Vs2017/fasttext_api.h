@@ -1,9 +1,13 @@
 #pragma once
 
+// No time to deal with this right now, but you need to uncomment this to
+// compile and run TestUtil and comment out to build C-like DLL.
+//#define EXTERN_C 
+
 #ifdef FASTTEXT_EXPORTS
-	#define FT_API(RetType) EXTERN_C __declspec(dllexport) RetType __cdecl
+	#define FT_API(RetType) EXTERN_C __declspec(dllexport) RetType __stdcall
 #else 
-	#define FT_API(RetType) EXTERN_C __declspec(dllimport) RetType __cdecl
+	#define FT_API(RetType) EXTERN_C __declspec(dllimport) RetType __stdcall
 #endif
 
 #pragma pack(push, 1)
@@ -22,5 +26,9 @@ FT_API(void*) CreateFastText();
 FT_API(void) LoadModel(void* hPtr, const char* path);
 FT_API(void) DestroyFastText(void* hPtr);
 FT_API(int) GetMaxLabelLenght(void* hPtr);
+FT_API(int) GetLabels(void* hPtr, char*** labels);
 FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* labelPrefix);
-FT_API(float) PredictSingle(void* hPtr, const char* input, char* predicted);
+FT_API(void) DestroyString(char* string);
+FT_API(void) DestroyStrings(char** strings, int cnt);
+FT_API(float) PredictSingle(void* hPtr, const char* input, char** predicted);
+FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabels, float* predictedProbabilities, int n);
