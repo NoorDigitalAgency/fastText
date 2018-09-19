@@ -170,3 +170,25 @@ FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabe
 
 	return cnt;
 }
+
+FT_API(int) GetSentenceVector(void* hPtr, const char* input, float** vector)
+{
+	auto fastText = static_cast<FastText*>(hPtr);
+	Vector svec(fastText->getDimension());
+	std::istringstream inStream(input);
+
+	fastText->getSentenceVector(inStream, svec);
+	
+	float* vec = new float[svec.size()];
+	size_t sz = sizeof(float) * svec.size();
+	memcpy_s(vec, sz, svec.data(), sz);
+
+	*vector = vec;
+
+	return (int)svec.size();
+}
+
+FT_API(void) DestroyVector(float* vector)
+{
+	delete[] vector;
+}

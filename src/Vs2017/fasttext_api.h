@@ -32,3 +32,6 @@ FT_API(void) DestroyString(char* string);
 FT_API(void) DestroyStrings(char** strings, int cnt);
 FT_API(float) PredictSingle(void* hPtr, const char* input, char** predicted);
 FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabels, float* predictedProbabilities, int n);
+
+FT_API(int) GetSentenceVector(void* hPtr, const char* input, float** vector);
+FT_API(void) DestroyVector(float* vector);
