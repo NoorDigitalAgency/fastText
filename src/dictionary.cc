@@ -103,7 +103,7 @@ void Dictionary::getSubwords(const std::string& word,
     substrings.push_back(words_[i].word);
   }
   if (word != EOS) {
-    computeSubwords(BOW + word + EOW, ngrams, substrings);
+    computeSubwords(BOW + word + EOW, ngrams, &substrings);
   }
 }
 
@@ -140,10 +140,18 @@ std::string Dictionary::getWord(int32_t id) const {
   return words_[id].word;
 }
 
+// The correct implementation of fnv should be:
+// h = h ^ uint32_t(uint8_t(str[i]));
+// Unfortunately, earlier version of fasttext used
+// h = h ^ uint32_t(str[i]);
+// which is undefined behavior (as char can be signed or unsigned).
+// Since all fasttext models that were already released were trained
+// using signed char, we fixed the hash function to make models
+// compatible whatever compiler is used.
 uint32_t Dictionary::hash(const std::string& str) const {
   uint32_t h = 2166136261;
   for (size_t i = 0; i < str.size(); i++) {
-    h = h ^ uint32_t(str[i]);
+    h = h ^ uint32_t(int8_t(str[i]));
     h = h * 16777619;
   }
   return h;
@@ -151,26 +159,7 @@ uint32_t Dictionary::hash(const std::string& str) const {
 
 void Dictionary::computeSubwords(const std::string& word,
                                std::vector<int32_t>& ngrams,
-                               std::vector<std::string>& substrings) const {
-  for (size_t i = 0; i < word.size(); i++) {
-    std::string ngram;
-    if ((word[i] & 0xC0) == 0x80) continue;
-    for (size_t j = i, n = 1; j < word.size() && n <= args_->maxn; n++) {
-      ngram.push_back(word[j++]);
-      while (j < word.size() && (word[j] & 0xC0) == 0x80) {
-        ngram.push_back(word[j++]);
-      }
-      if (n >= args_->minn && !(n == 1 && (i == 0 || j == word.size()))) {
-        int32_t h = hash(ngram) % args_->bucket;
-        ngrams.push_back(nwords_ + h);
-        substrings.push_back(ngram);
-      }
-    }
-  }
-}
-
-void Dictionary::computeSubwords(const std::string& word,
-                               std::vector<int32_t>& ngrams) const {
+                               std::vector<std::string>* substrings) const {
   for (size_t i = 0; i < word.size(); i++) {
     std::string ngram;
     if ((word[i] & 0xC0) == 0x80) continue;
@@ -182,6 +171,9 @@ void Dictionary::computeSubwords(const std::string& word,
       if (n >= args_->minn && !(n == 1 && (i == 0 || j == word.size()))) {
         int32_t h = hash(ngram) % args_->bucket;
         pushHash(ngrams, h);
+        if (substrings) {
+          substrings->push_back(ngram);
+        }
       }
     }
   }
