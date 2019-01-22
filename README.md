@@ -1,6 +1,10 @@
+# fastText
+[fastText](https://fasttext.cc/) is a library for efficient learning of word representations and sentence classification.
+
+[![CircleCI](https://circleci.com/gh/facebookresearch/fastText/tree/master.svg?style=svg)](https://circleci.com/gh/facebookresearch/fastText/tree/master)
+
 ## Table of contents
 
-* [Introduction](#introduction)
 * [Resources](#resources)
    * [Models](#models)
    * [Supplementary data](#supplementary-data)
@@ -24,11 +28,6 @@
 * [Join the fastText community](#join-the-fasttext-community)
 * [License](#license)
 
-## Introduction
-
-[fastText](https://fasttext.cc/) is a library for efficient learning of word representations and sentence classification.
-This fork tracks the upstream project and adds a C-style wrapper with corresponding Visual C++ project.
-
 ## Resources
 
 ### Models
@@ -49,7 +48,7 @@ We also provide a [cheatsheet](https://fasttext.cc/docs/en/cheatsheet.html#conte
 
 ## Requirements
 
-We are continously building and testing our library, CLI and Python bindings under various docker images using [circleci](https://circleci.com/).
+We are continuously building and testing our library, CLI and Python bindings under various docker images using [circleci](https://circleci.com/).
 
 Generally, **fastText** builds on modern Mac OS and Linux distributions.
 Since it uses some C++11 features, it requires a compiler with good C++11 support.
@@ -90,9 +89,9 @@ There is also the master branch that contains all of our most recent work, but c
 ### Building fastText using make (preferred)
 
 ```
-$ wget https://github.com/facebookresearch/fastText/archive/v0.1.0.zip
-$ unzip v0.1.0.zip
-$ cd fastText-0.1.0
+$ wget https://github.com/facebookresearch/fastText/archive/v0.2.0.zip
+$ unzip v0.2.0.zip
+$ cd fastText-0.2.0
 $ make
 ```
 
@@ -244,8 +243,8 @@ The following arguments are optional:
   -verbose            verbosity level [2]
 
 The following arguments for the dictionary are optional:
-  -minCount           minimal number of word occurences [1]
-  -minCountLabel      minimal number of label occurences [0]
+  -minCount           minimal number of word occurrences [1]
+  -minCountLabel      minimal number of label occurrences [0]
   -wordNgrams         max length of word ngram [1]
   -bucket             number of buckets [2000000]
   -minn               min length of char ngram [0]
@@ -337,4 +336,4 @@ See the CONTRIBUTING file for information about how to help out.
 
 ## License
 
-fastText is BSD-licensed. We also provide an additional patent grant.
+fastText is MIT-licensed.

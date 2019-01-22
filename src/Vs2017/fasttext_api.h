@@ -1,9 +1,5 @@
 #pragma once
 
-// No time to deal with this right now, but you need to uncomment this to
-// compile and run TestUtil and comment out to build C-like DLL.
-//#define EXTERN_C 
-
 #ifdef FASTTEXT_EXPORTS
 	#define FT_API(RetType) EXTERN_C __declspec(dllexport) RetType __stdcall
 #else 

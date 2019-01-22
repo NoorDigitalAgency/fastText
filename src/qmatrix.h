@@ -2,9 +2,8 @@
  * Copyright (c) 2016-present, Facebook, Inc.
  * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #pragma once
@@ -13,8 +12,8 @@
 #include <istream>
 #include <ostream>
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "real.h"
 
@@ -26,36 +25,35 @@
 namespace fasttext {
 
 class QMatrix {
-  protected:
-    std::unique_ptr<ProductQuantizer> pq_;
-    std::unique_ptr<ProductQuantizer> npq_;
+ protected:
+  std::unique_ptr<ProductQuantizer> pq_;
+  std::unique_ptr<ProductQuantizer> npq_;
 
-    std::vector<uint8_t> codes_;
-    std::vector<uint8_t> norm_codes_;
+  std::vector<uint8_t> codes_;
+  std::vector<uint8_t> norm_codes_;
 
-    bool qnorm_;
+  bool qnorm_;
 
-    int64_t m_;
-    int64_t n_;
+  int64_t m_;
+  int64_t n_;
 
-    int32_t codesize_;
+  int32_t codesize_;
 
-  public:
+ public:
+  QMatrix();
+  QMatrix(const Matrix&, int32_t, bool);
 
-    QMatrix();
-    QMatrix(const Matrix&, int32_t, bool);
+  int64_t getM() const;
+  int64_t getN() const;
 
-    int64_t getM() const;
-    int64_t getN() const;
+  void quantizeNorm(const Vector&);
+  void quantize(const Matrix&);
 
-    void quantizeNorm(const Vector&);
-    void quantize(const Matrix&);
+  void addToVector(Vector& x, int32_t t) const;
+  real dotRow(const Vector&, int64_t) const;
 
-    void addToVector(Vector& x, int32_t t) const;
-    real dotRow(const Vector&, int64_t) const;
-
-    void save(std::ostream&);
-    void load(std::istream&);
+  void save(std::ostream&);
+  void load(std::istream&);
 };
 
-}
+} // namespace fasttext

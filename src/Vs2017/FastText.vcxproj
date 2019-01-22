@@ -15,7 +15,7 @@
     <ProjectGuid>{C6AF23B3-461F-4793-AF40-C59AAEFBB27B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>FastText</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -59,6 +59,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>
       </LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -77,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>
       </LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -90,6 +92,7 @@
     <ClInclude Include="..\dictionary.h" />
     <ClInclude Include="..\fasttext.h" />
     <ClInclude Include="..\matrix.h" />
+    <ClInclude Include="..\meter.h" />
     <ClInclude Include="..\model.h" />
     <ClInclude Include="..\productquantizer.h" />
     <ClInclude Include="..\qmatrix.h" />
@@ -106,6 +109,7 @@
     <ClCompile Include="..\fasttext.cc" />
     <ClCompile Include="..\main.cc" />
     <ClCompile Include="..\matrix.cc" />
+    <ClCompile Include="..\meter.cc" />
     <ClCompile Include="..\model.cc" />
     <ClCompile Include="..\productquantizer.cc" />
     <ClCompile Include="..\qmatrix.cc" />

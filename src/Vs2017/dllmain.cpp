@@ -125,7 +125,10 @@ FT_API(float) PredictSingle(void* hPtr, const char* input, char** predicted)
 	std::vector<std::pair<real,std::string>> predictions;
 	std::istringstream inStream(input);
 
-	fastText->predict(inStream, 1, predictions, 0);
+	if (!fastText->predictLine(inStream, predictions, 1, 0))
+	{
+		return 0;
+	}
 
 	if (predictions.size() == 0)
 	{
@@ -148,7 +151,10 @@ FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabe
 	std::vector<std::pair<real,std::string>> predictions;
 	std::istringstream inStream(input);
 
-	fastText->predict(inStream, n, predictions, 0);
+	if (!fastText->predictLine(inStream, predictions, n, 0))
+	{
+		return 0;
+	}
 
 	if (predictions.size() == 0)
 	{

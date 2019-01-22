@@ -1,9 +1,8 @@
 # Copyright (c) 2017-present, Facebook, Inc.
 # All rights reserved.
 #
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 
 from __future__ import absolute_import
 from __future__ import division
@@ -12,6 +11,7 @@ from __future__ import unicode_literals
 
 import fasttext_pybind as fasttext
 import numpy as np
+import multiprocessing
 
 loss_name = fasttext.loss_name
 model_name = fasttext.model_name
@@ -130,12 +130,16 @@ class _FastText():
 
         if type(text) == list:
             text = [check(entry) for entry in text]
-            all_probs, all_labels = self.f.multilinePredict(text, k, threshold)
-            return all_labels, np.array(all_probs, copy=False)
+            predictions = self.f.multilinePredict(text, k, threshold)
+            dt = np.dtype([('probability', 'float64'), ('label', '<U32')])
+            result_as_pair = np.array(predictions, dtype=dt)
+
+            return result_as_pair['label'].tolist(), result_as_pair['probability']
         else:
             text = check(text)
-            pairs = self.f.predict(text, k, threshold)
-            probs, labels = zip(*pairs)
+            predictions = self.f.predict(text, k, threshold)
+            probs, labels = zip(*predictions)
+
             return labels, np.array(probs, copy=False)
 
     def get_input_matrix(self):
@@ -216,6 +220,17 @@ class _FastText():
         """Evaluate supervised model using file given by path"""
         return self.f.test(path, k)
 
+    def test_label(self, path, k=1, threshold=0.0):
+        """
+        Return the precision and recall score for each label.
+
+        The returned value is a dictionary, where the key is the label.
+        For example:
+        f.test_label(...)
+        {'__label__italian-cuisine' : {'precision' : 0.7, 'recall' : 0.74}}
+        """
+        return self.f.testLabel(path, k, threshold)
+
     def quantize(
         self,
         input=None,
@@ -275,6 +290,8 @@ def _parse_loss_string(string):
         return loss_name.hs
     if string == "softmax":
         return loss_name.softmax
+    if string == "ova":
+        return loss_name.ova
     else:
         raise ValueError("Unrecognized loss name")
 
@@ -317,7 +334,7 @@ def train_supervised(
     wordNgrams=1,
     loss="softmax",
     bucket=2000000,
-    thread=12,
+    thread=multiprocessing.cpu_count() - 1,
     lrUpdateRate=100,
     t=1e-4,
     label="__label__",
@@ -358,7 +375,7 @@ def train_unsupervised(
     wordNgrams=1,
     loss="ns",
     bucket=2000000,
-    thread=12,
+    thread=multiprocessing.cpu_count() -1,
     lrUpdateRate=100,
     t=1e-4,
     label="__label__",
