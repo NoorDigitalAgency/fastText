@@ -40,7 +40,7 @@ FT_API(void) DestroyFastText(void* hPtr)
 	delete static_cast<FastText*>(hPtr);
 }
 
-int GetMaxLabelLenght(void* hPtr)
+FT_API(int) GetMaxLabelLenght(void* hPtr)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
 	auto dict = fastText->getDictionary();
@@ -59,7 +59,7 @@ int GetMaxLabelLenght(void* hPtr)
 	return maxLen;
 }
 
-int GetLabels(void* hPtr, char*** labels)
+FT_API(int) GetLabels(void* hPtr, char*** labels)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
 	auto dict = fastText->getDictionary();
@@ -79,7 +79,7 @@ int GetLabels(void* hPtr, char*** labels)
 	return numLabels;
 }
 
-FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* labelPrefix)
+FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, SupervisedArgs trainArgs, const char* labelPrefix)
 {
 	auto fastText = static_cast<FastText*>(hPtr);
 	auto args = Args();
@@ -98,6 +98,11 @@ FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, 
 	if (labelPrefix != nullptr)
 	{
 		args.label = std::string(labelPrefix);
+	}
+
+	if (trainArgs.Threads > 0)
+	{
+		args.thread = trainArgs.Threads;
 	}
 
 	fastText->train(args);
@@ -197,4 +202,59 @@ FT_API(int) GetSentenceVector(void* hPtr, const char* input, float** vector)
 FT_API(void) DestroyVector(float* vector)
 {
 	delete[] vector;
+}
+
+FT_API(void) Train(void* hPtr, const char* input, const char* output, TrainingArgs trainArgs, const char* label,
+	const char* pretrainedVectors)
+{
+	auto fastText = static_cast<FastText*>(hPtr);
+	auto args = CreateArgs(trainArgs, label, pretrainedVectors);
+	args.input = std::string(input);
+	args.output = std::string(output);
+	
+	fastText->train(args);
+	fastText->saveModel();
+	fastText->saveVectors();
+}
+
+fasttext::Args CreateArgs(TrainingArgs args, const char* label, const char* pretrainedVectors)
+{
+	auto result = fasttext::Args();
+	result.bucket = args.bucket;
+	result.cutoff = args.cutoff;
+	result.dim = args.dim;
+	result.dsub = args.dsub;
+	result.epoch = args.epoch;
+
+	if (label != nullptr)
+	{
+		result.label = std::string(label);
+	}
+
+	result.loss = args.loss;
+	result.lr = args.lr;
+	result.lrUpdateRate = args.lrUpdateRate;
+	result.maxn = args.maxn;
+	result.minCount = args.minCount;
+	result.minCountLabel = args.minCountLabel;
+	result.minn = args.minn;
+	result.model = args.model;
+	result.neg = args.neg;
+
+	if (pretrainedVectors != nullptr)
+	{
+		result.pretrainedVectors = std::string(pretrainedVectors);
+	}
+
+	result.qnorm = args.qnorm;
+	result.qout = args.qout;
+	result.retrain = args.retrain;
+	result.saveOutput = args.saveOutput;
+	result.t = args.t;
+	result.thread = args.thread;
+	result.verbose = args.verbose;
+	result.wordNgrams = args.wordNgrams;
+	result.ws = args.ws;
+
+	return result;
 }
