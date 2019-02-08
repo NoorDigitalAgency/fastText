@@ -147,7 +147,7 @@ FT_API(float) PredictSingle(void* hPtr, const char* input, char** predicted)
 
 	*predicted = buff;
 	
-	return std::exp(predictions[0].first);
+	return predictions[0].first;
 }
 
 FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabels, float* predictedProbabilities, int n)
@@ -174,7 +174,7 @@ FT_API(int) PredictMultiple(void* hPtr, const char* input, char*** predictedLabe
 		labels[i] = new char[len + 1];
 		predictions[i].second.copy(labels[i], len);
 		labels[i][len] = '\0';
-		predictedProbabilities[i] = std::exp(predictions[i].first);
+		predictedProbabilities[i] = predictions[i].first;
 	}
 
 	*(predictedLabels) = labels;

@@ -14,10 +14,8 @@ int main()
 	args.WordNGrams = 3;
 	args.Verbose = 2;
 	args.Threads = 1;
-	args.MinCharNGrams = 3;
-	args.MaxCharNGrams = 5;
 	
-	TrainSupervised(hPtr, "D:\\__Models\\cooking.train.txt", "D:\\__Models\\fasttext", args, nullptr);*/
+	TrainSupervised(hPtr, "D:\\__Models\\cooking.train.txt", "D:\\__Models\\fasttext2", args, nullptr);*/
 	
 	
 	
