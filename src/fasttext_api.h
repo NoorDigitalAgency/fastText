@@ -6,13 +6,13 @@
 
 #ifdef FASTTEXT_EXPORTS
     #if defined WIN32
-        #define FT_API(RetType) EXTERN_C __declspec(dllexport) RetType
+        #define FT_API(RetType) extern "C" __declspec(dllexport) RetType
     #else
         #define FT_API(RetType) extern "C" RetType __attribute__((visibility("default")))
     #endif
 #else
     #if defined WIN32
-        #define FT_API(RetType) EXTERN_C __declspec(dllimport) RetType
+        #define FT_API(RetType) extern "C" __declspec(dllimport) RetType
     #else
         #define FT_API(RetType) extern "C" RetType
     #endif
