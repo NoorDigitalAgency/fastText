@@ -1,4 +1,5 @@
 #include <string>
+#include <cstring>
 #include <sstream>
 #include "fasttext.h"
 #include "fasttext_api.h"
