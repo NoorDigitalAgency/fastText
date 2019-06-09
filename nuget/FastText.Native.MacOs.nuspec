@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>FastText.Native.Windows</id>
+        <id>FastText.Native.MacOs</id>
         <version>$version$</version>
-        <title>FastText binary with C API for x64 Windows.</title>
+        <title>FastText binary with C API for x64 MacOs.</title>
         <authors>Oleg Tarasov</authors>
         <owners>Oleg Tarasov</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Unofficial build of Facebook's FastText library for Windows with C-style API.</description>
+        <description>Unofficial build of Facebook's FastText library for MacOs with C-style API.</description>
         <summary />
         <copyright></copyright>
         <contentFiles>
@@ -15,6 +15,6 @@
         </contentFiles>
     </metadata>
     <files>
-        <file src="..\build\Release\fasttext.dll" target="contentFiles\any\any\Resources" />
+        <file src="..\build\libfasttext.dylib" target="contentFiles\any\any\Resources" />
     </files>
 </package>
