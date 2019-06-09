@@ -30,7 +30,8 @@ set(HEADER_FILES
     src/quantmatrix.h
     src/real.h
     src/utils.h
-    src/vector.h)
+    src/vector.h
+    src/fasttext_api.h)
 
 set(SOURCE_FILES
     src/args.cc
@@ -45,7 +46,10 @@ set(SOURCE_FILES
     src/productquantizer.cc
     src/quantmatrix.cc
     src/utils.cc
-    src/vector.cc)
+    src/vector.cc
+    src/fasttext_api.cc)
+
+add_definitions(-DFASTTEXT_EXPORTS)
 
 add_library(fasttext-shared SHARED ${SOURCE_FILES} ${HEADER_FILES})
 add_library(fasttext-static STATIC ${SOURCE_FILES} ${HEADER_FILES})
@@ -57,6 +61,9 @@ set_target_properties(fasttext-static_pic PROPERTIES OUTPUT_NAME fasttext_pic
 add_executable(fasttext-bin src/main.cc)
 target_link_libraries(fasttext-bin pthread fasttext-static)
 set_target_properties(fasttext-bin PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" OUTPUT_NAME fasttext)
+add_executable(fasttext-api-test src/fasttext_api_test.cc)
+target_link_libraries(fasttext-api-test fasttext-shared)
+set_target_properties(fasttext-api-test PROPERTIES OUTPUT_NAME fasttext-test)
 install (TARGETS fasttext-shared
     LIBRARY DESTINATION lib)
 install (TARGETS fasttext-static
