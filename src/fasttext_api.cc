@@ -87,9 +87,12 @@ FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, 
         args.thread = trainArgs.Threads;
     }
 
+    auto vectorsPath = std::string(output) + ".vec";
+    auto modelPath = std::string(output) + ".bin";
+
     fastText->train(args);
-    fastText->saveModel();
-    fastText->saveVectors();
+    fastText->saveModel(modelPath);
+    fastText->saveVectors(vectorsPath);
 }
 
 FT_API(void) DestroyString(char* string)
@@ -194,9 +197,12 @@ FT_API(void) Train(void* hPtr, const char* input, const char* output, TrainingAr
     args.input = std::string(input);
     args.output = std::string(output);
 
+    auto vectorsPath = std::string(output) + ".vec";
+    auto modelPath = std::string(output) + ".bin";
+
     fastText->train(args);
-    fastText->saveModel();
-    fastText->saveVectors();
+    fastText->saveModel(modelPath);
+    fastText->saveVectors(vectorsPath);
 }
 
 fasttext::Args CreateArgs(TrainingArgs args, const char* label, const char* pretrainedVectors)
