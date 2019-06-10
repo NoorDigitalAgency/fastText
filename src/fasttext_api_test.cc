@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "fasttext_api.h"
 
 using std::cout;
