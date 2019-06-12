@@ -18,7 +18,7 @@ include_directories(fasttext)
 if (MSVC)
     set(CMAKE_CXX_FLAGS " /O2 /DFASTTEXT_EXPORTS /DWIN32 /EHsc /wd4244 /wd4267")
 else()
-    set(CMAKE_CXX_FLAGS " -pthread -std=c++11 -funroll-loops -O3 -march=native -DFASTTEXT_EXPORTS")
+    set(CMAKE_CXX_FLAGS " -pthread -std=c++11 -funroll-loops -O3 -DFASTTEXT_EXPORTS")
 endif()
 
 set(HEADER_FILES
