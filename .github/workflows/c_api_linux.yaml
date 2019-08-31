@@ -1,0 +1,29 @@
+name: c_api_linux
+
+on:
+  push:
+    branches:
+      - c_api
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Download Nuget
+        run: |
+          cd ~
+          wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release --target fasttext-shared
+      - name: Make Nuget package
+        env:
+          APITOKEN: ${{ secrets. NugetToken }}
+        run: |
+          cd nuget
+          mono ~/nuget.exe pack FastText.Native.Linux.nuspec -Version $BUILD_BUILDNUMBER
+          mono ~/nuget.exe push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
