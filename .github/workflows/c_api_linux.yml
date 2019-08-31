@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: olegtarasov/get-tag@v1-release
+      - uses: hmarr/debug-action@v1.0.0
       - name: Download Nuget
         run: |
           cd ~
@@ -24,9 +25,8 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release --target fasttext-shared
       - name: Make Nuget package
-        uses: hmarr/debug-action@v1.0.0
         env:
-          APITOKEN: ${{ secrets. NugetToken }}
+          APITOKEN: ${{ secrets.NugetToken }}
         run: |
           cd nuget
           mono ~/nuget.exe pack FastText.Native.Linux.nuspec -Version $BUILD_BUILDNUMBER
