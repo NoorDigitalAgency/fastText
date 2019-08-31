@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
+      - uses: hmarr/debug-action@v1.0.0
       - name: Download Nuget
         run: |
           cd ~
