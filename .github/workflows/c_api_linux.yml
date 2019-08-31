@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
-      - uses: hmarr/debug-action@v1.0.0
+      -
       - name: Download Nuget
         run: |
           cd ~
@@ -24,6 +24,9 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release --target fasttext-shared
       - name: Make Nuget package
+        uses:
+          - hmarr/debug-action@v1.0.0
+          - olegtarasov/get-tag@v1-release
         env:
           APITOKEN: ${{ secrets. NugetToken }}
         run: |
