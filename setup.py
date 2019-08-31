@@ -19,8 +19,9 @@ import setuptools
 import os
 import subprocess
 import platform
+import io
 
-__version__ = '0.8.22'
+__version__ = '0.9.1'
 FASTTEXT_SRC = "src"
 
 # Based on https://github.com/pybind/python_example
@@ -64,7 +65,7 @@ ext_modules = [
     Extension(
         str('fasttext_pybind'),
         [
-            str('python/fastText/pybind/fasttext_pybind.cc'),
+            str('python/fasttext_module/fasttext/pybind/fasttext_pybind.cc'),
         ] + fasttext_src_cc,
         include_dirs=[
             # Path to pybind11 headers
@@ -97,15 +98,15 @@ def has_flag(compiler, flags):
 
 
 def cpp_flag(compiler):
-    """Return the -std=c++[0x/11/14] compiler flag.
-    The c++14 is preferred over c++0x/11 (when it is available).
+    """Return the -std=c++[11/14] compiler flag.
+    The c++14 is preferred over c++11 (when it is available).
     """
-    standards = ['-std=c++14', '-std=c++11', '-std=c++0x']
+    standards = ['-std=c++14', '-std=c++11']
     for standard in standards:
         if has_flag(compiler, [standard]):
             return standard
     raise RuntimeError(
-        'Unsupported compiler -- at least C++0x support '
+        'Unsupported compiler -- at least C++11 support '
         'is needed!'
     )
 
@@ -160,16 +161,16 @@ def _get_readme():
     Use pandoc to generate rst from md.
     pandoc --from=markdown --to=rst --output=python/README.rst python/README.md
     """
-    with open("python/README.rst") as fid:
+    with io.open("python/README.rst", encoding='utf-8') as fid:
         return fid.read()
 
 
 setup(
     name='fasttext',
     version=__version__,
-    author='Christian Puhrsch',
-    author_email='cpuhrsch@fb.com',
-    description='fastText Python bindings',
+    author='Onur Celebi',
+    author_email='celebio@fb.com',
+    description='fasttext Python bindings',
     long_description=_get_readme(),
     ext_modules=ext_modules,
     url='https://github.com/facebookresearch/fastText',
@@ -193,10 +194,10 @@ setup(
     install_requires=['pybind11>=2.2', "setuptools >= 0.7.0", "numpy"],
     cmdclass={'build_ext': BuildExt},
     packages=[
-        str('fastText'),
-        str('fastText.util'),
-        str('fastText.tests'),
+        str('fasttext'),
+        str('fasttext.util'),
+        str('fasttext.tests'),
     ],
-    package_dir={str(''): str('python')},
+    package_dir={str(''): str('python/fasttext_module')},
     zip_safe=False,
 )

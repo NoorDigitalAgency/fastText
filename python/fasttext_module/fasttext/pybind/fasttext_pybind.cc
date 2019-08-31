@@ -7,6 +7,7 @@
  */
 
 #include <args.h>
+#include <autotune.h>
 #include <densematrix.h>
 #include <fasttext.h>
 #include <pybind11/pybind11.h>
@@ -31,10 +32,15 @@ py::str castToPythonString(const std::string& s, const char* onUnicodeError) {
   // for python 2 and not encoded for python 3 :
   // https://github.com/pybind/pybind11/blob/ccbe68b084806dece5863437a7dc93de20bd9b15/include/pybind11/pytypes.h#L930
 #if PY_MAJOR_VERSION < 3
-  handle = PyUnicode_AsEncodedString(handle, "utf-8", onUnicodeError);
+  PyObject* handle_encoded =
+      PyUnicode_AsEncodedString(handle, "utf-8", onUnicodeError);
+  Py_DECREF(handle);
+  handle = handle_encoded;
 #endif
 
-  return py::str(handle);
+  py::str handle_str = py::str(handle);
+  Py_DECREF(handle);
+  return handle_str;
 }
 
 std::pair<std::vector<py::str>, std::vector<py::str>> getLineText(
@@ -88,12 +94,24 @@ PYBIND11_MODULE(fasttext_pybind, m) {
       .def_readwrite("verbose", &fasttext::Args::verbose)
       .def_readwrite("pretrainedVectors", &fasttext::Args::pretrainedVectors)
       .def_readwrite("saveOutput", &fasttext::Args::saveOutput)
+      .def_readwrite("seed", &fasttext::Args::seed)
 
       .def_readwrite("qout", &fasttext::Args::qout)
       .def_readwrite("retrain", &fasttext::Args::retrain)
       .def_readwrite("qnorm", &fasttext::Args::qnorm)
       .def_readwrite("cutoff", &fasttext::Args::cutoff)
-      .def_readwrite("dsub", &fasttext::Args::dsub);
+      .def_readwrite("dsub", &fasttext::Args::dsub)
+
+      .def_readwrite(
+          "autotuneValidationFile", &fasttext::Args::autotuneValidationFile)
+      .def_readwrite("autotuneMetric", &fasttext::Args::autotuneMetric)
+      .def_readwrite(
+          "autotunePredictions", &fasttext::Args::autotunePredictions)
+      .def_readwrite("autotuneDuration", &fasttext::Args::autotuneDuration)
+      .def_readwrite("autotuneModelSize", &fasttext::Args::autotuneModelSize)
+      .def("setManual", [](fasttext::Args& m, const std::string& argName) {
+        m.setManual(argName);
+      });
 
   py::enum_<fasttext::model_name>(m, "model_name")
       .value("cbow", fasttext::model_name::cbow)
@@ -108,9 +126,22 @@ PYBIND11_MODULE(fasttext_pybind, m) {
       .value("ova", fasttext::loss_name::ova)
       .export_values();
 
+  py::enum_<fasttext::metric_name>(m, "metric_name")
+      .value("f1score", fasttext::metric_name::f1score)
+      .value("labelf1score", fasttext::metric_name::labelf1score)
+      .export_values();
+
   m.def(
       "train",
-      [](fasttext::FastText& ft, fasttext::Args& a) { ft.train(a); },
+      [](fasttext::FastText& ft, fasttext::Args& a) {
+        if (a.hasAutotune()) {
+          fasttext::Autotune autotune(std::shared_ptr<fasttext::FastText>(
+              &ft, [](fasttext::FastText*) {}));
+          autotune.train(a);
+        } else {
+          ft.train(a);
+        }
+      },
       py::call_guard<py::gil_scoped_release>());
 
   py::class_<fasttext::Vector>(m, "Vector", py::buffer_protocol())
