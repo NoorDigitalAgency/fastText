@@ -2,8 +2,10 @@ name: c_api_linux
 
 on:
   push:
-    branches:
-      - c_api
+    tags:
+      - '*'
+    #branches:
+    #  - c_api
 
 jobs:
   build:
@@ -28,4 +30,3 @@ jobs:
           cd nuget
           mono ~/nuget.exe pack FastText.Native.Linux.nuspec -Version $BUILD_BUILDNUMBER
           mono ~/nuget.exe push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
-      
