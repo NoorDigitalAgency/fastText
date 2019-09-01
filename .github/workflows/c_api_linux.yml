@@ -6,16 +6,12 @@ on:
       - '1.*'
 
 jobs:
-  build:
+  build_linux:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
       - uses: olegtarasov/get-tag@v1
       - uses: olegtarasov/download-nuget@v1
-      #- name: Download Nuget
-      #  run: |
-      #    cd ~
-      #    wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
       - name: Build
         run: |
           mkdir build
@@ -29,3 +25,43 @@ jobs:
           cd nuget
           mono $NUGET_EXE pack FastText.Native.Linux.nuspec -Version $GITHUB_TAG_NAME
           mono $NUGET_EXE push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
+
+  build_macos:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: olegtarasov/get-tag@v1
+      - uses: olegtarasov/download-nuget@v1
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release --target fasttext-shared
+      - name: Make Nuget package
+        env:
+          APITOKEN: ${{ secrets.NugetToken }}
+        run: |
+          cd nuget
+          mono $NUGET_EXE pack FastText.Native.MacOs.nuspec -Version $GITHUB_TAG_NAME
+          mono $NUGET_EXE push FastText.Native.MacOs*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: olegtarasov/get-tag@v1
+      - uses: olegtarasov/download-nuget@v1
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_GENERATOR_PLATFORM=x64 ..
+          cmake --build . --config Release --target fasttext-shared
+      - name: Make Nuget package
+        env:
+          APITOKEN: ${{ secrets.NugetToken }}
+        run: |
+          cd nuget
+          nuget pack FastText.Native.Windows.nuspec -Version $GITHUB_TAG_NAME
+          nuget push FastText.Native.Windows*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
