@@ -3,9 +3,7 @@ name: Release NuGet package
 on:
   push:
     tags:
-      - '*'
-    #branches:
-    #  - c_api
+      - '1.*'
 
 jobs:
   build:
