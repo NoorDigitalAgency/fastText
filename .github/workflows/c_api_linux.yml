@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: olegtarasov/get-tag@v1
-      - uses: olegtarasov/download-nuget@v1-release
+      - uses: olegtarasov/download-nuget@v1
       #- name: Download Nuget
       #  run: |
       #    cd ~
