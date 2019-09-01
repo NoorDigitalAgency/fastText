@@ -1,11 +1,11 @@
-name: c_api_linux
+name: Release NuGet package
 
 on:
   push:
     tags:
       - '*'
-    #branches:
-    #  - c_api
+    branches:
+      - c_api
 
 jobs:
   build:
@@ -13,10 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: olegtarasov/get-tag@v1
-      - name: Download Nuget
-        run: |
-          cd ~
-          wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+      - uses: olegtarasov/download-nuget@v1-release
+      #- name: Download Nuget
+      #  run: |
+      #    cd ~
+      #    wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
       - name: Build
         run: |
           mkdir build
@@ -28,5 +29,5 @@ jobs:
           APITOKEN: ${{ secrets.NugetToken }}
         run: |
           cd nuget
-          mono ~/nuget.exe pack FastText.Native.Linux.nuspec -Version $GITHUB_TAG_NAME
-          mono ~/nuget.exe push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
+          mono nuget.exe pack FastText.Native.Linux.nuspec -Version $GITHUB_TAG_NAME
+          mono nuget.exe push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
