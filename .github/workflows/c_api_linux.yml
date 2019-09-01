@@ -64,4 +64,4 @@ jobs:
         run: |
           cd nuget
           nuget pack FastText.Native.Windows.nuspec -Version %GITHUB_TAG_NAME%
-          nuget push FastText.Native.Windows*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey %APITOKEN%
+          nuget push FastText.Native.Windows*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey %APITOKEN% -NoSymbols
