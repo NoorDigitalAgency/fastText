@@ -4,8 +4,8 @@ on:
   push:
     tags:
       - '*'
-    branches:
-      - c_api
+    #branches:
+    #  - c_api
 
 jobs:
   build:
@@ -29,5 +29,5 @@ jobs:
           APITOKEN: ${{ secrets.NugetToken }}
         run: |
           cd nuget
-          mono nuget.exe pack FastText.Native.Linux.nuspec -Version $GITHUB_TAG_NAME
-          mono nuget.exe push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
+          mono $NUGET_EXE pack FastText.Native.Linux.nuspec -Version $GITHUB_TAG_NAME
+          mono $NUGET_EXE push FastText.Native.Linux*.nupkg  -Source https://api.nuget.org/v3/index.json -ApiKey $APITOKEN
