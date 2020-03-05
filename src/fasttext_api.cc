@@ -23,7 +23,7 @@ FT_API(void) DestroyFastText(void* hPtr)
     delete static_cast<FastText*>(hPtr);
 }
 
-FT_API(int) GetMaxLabelLenght(void* hPtr)
+FT_API(int) GetMaxLabelLength(void* hPtr)
 {
     auto fastText = static_cast<FastText*>(hPtr);
     auto dict = fastText->getDictionary();
@@ -60,6 +60,33 @@ FT_API(int) GetLabels(void* hPtr, char*** labels)
 
     *labels = localLabels;
     return numLabels;
+}
+
+FT_API(int) GetNN(void* hPtr, const char* input, char*** predictedNeighbors, float* predictedProbabilities, const int n)
+{
+    auto fastText = static_cast<FastText*>(hPtr);
+
+    const auto predictions = fastText->getNN(input, n);
+	
+    if (predictions.empty())
+    {
+        return 0;
+    }
+
+    const int length = fmin(predictions.size(), n);
+    const auto labels = new char* [length];
+    for (auto i = 0; i < length; ++i)
+    {
+	    const auto len = predictions[i].second.length();
+        labels[i] = new char[len + 1];
+        predictions[i].second.copy(labels[i], len);
+        labels[i][len] = '\0';
+        predictedProbabilities[i] = predictions[i].first;
+    }
+
+    *(predictedNeighbors) = labels;
+
+    return length;
 }
 
 FT_API(void) TrainSupervised(void* hPtr, const char* input, const char* output, SupervisedArgs trainArgs, const char* labelPrefix)
