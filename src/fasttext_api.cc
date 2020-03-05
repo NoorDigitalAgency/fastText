@@ -1,6 +1,7 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <strstream>
 #include "fasttext.h"
 #include "fasttext_api.h"
 
@@ -16,6 +17,25 @@ FT_API(void) LoadModel(void* hPtr, const char* path)
 {
     auto fastText = static_cast<FastText*>(hPtr);
     fastText->loadModel(path);
+}
+
+FT_API(void) LoadModelData(void* hPtr, const char* data, const long length)
+{
+	const auto FASTTEXT_VERSION = 12; /* Version 1b */
+	const auto FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
+	auto fastText = static_cast<FastText*>(hPtr);
+	std::istrstream stream(data, length);
+	int32_t magic;
+	int32_t version;
+	stream.read(reinterpret_cast<char*>(&magic), sizeof(int32_t));
+	if (magic != FASTTEXT_FILEFORMAT_MAGIC_INT32) {
+		throw std::invalid_argument("Data has wrong format!");
+	}
+	stream.read(reinterpret_cast<char*>(&version), sizeof(int32_t));
+	if (version > FASTTEXT_VERSION) {
+		throw std::invalid_argument("Data has wrong format!");
+	}
+	fastText->loadModel(stream);
 }
 
 FT_API(void) DestroyFastText(void* hPtr)

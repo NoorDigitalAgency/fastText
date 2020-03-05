@@ -64,6 +64,7 @@ typedef struct TrainingArgs
 
 FT_API(void*) CreateFastText();
 FT_API(void) LoadModel(void* hPtr, const char* path);
+FT_API(void) LoadModelData(void* hPtr, const char* data, long length);
 FT_API(void) DestroyFastText(void* hPtr);
 FT_API(int) GetMaxLabelLength(void* hPtr);
 FT_API(int) GetLabels(void* hPtr, char*** labels);
